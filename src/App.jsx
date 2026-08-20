@@ -7,31 +7,37 @@ const initialTodos = [
     id: 1,
     title: "Complete GitHub assignment",
     completed: false,
+    priority: "High",
   },
   {
     id: 2,
     title: "Review pull request",
     completed: true,
+    priority: "Medium",
   },
   {
     id: 3,
     title: "Fix login page layout",
     completed: false,
+    priority: "High",
   },
   {
     id: 4,
     title: "Update project documentation",
     completed: false,
+    priority: "Low",
   },
   {
     id: 5,
     title: "Write unit tests",
     completed: true,
+    priority: "Medium",
   },
   {
     id: 6,
     title: "Deploy the application",
     completed: false,
+    priority: "High",
   },
 ]
 
@@ -39,11 +45,12 @@ function App() {
   const [todos, setTodos] = useState(initialTodos)
   const [searchTerm, setSearchTerm] = useState('')
 
-  const addTodo = (title) => {
+  const addTodo = (title, priority) => {
     const newTodo = {
       id: Date.now(),
       title,
       completed: false,
+      priority,
     }
 
     setTodos([newTodo, ...todos])
@@ -63,7 +70,6 @@ function App() {
     setTodos(todos.filter((todo) => todo.id !== id))
   }
 
-  // Filter todos based on search term
   const filteredTodos = todos.filter((todo) =>
     todo.title.toLowerCase().includes(searchTerm.toLowerCase())
   )
@@ -86,20 +92,18 @@ function App() {
           <TodoForm onAddTodo={addTodo} />
         </div>
 
-        {/* Search Input */}
         <div className="mb-6">
           <input
             type="text"
             placeholder="Search todos..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full px-4 py-3 border border-gray-300 rounded-lg 
-                       focus:outline-none focus:ring-2 focus:ring-blue-500 
+            className="w-full px-4 py-3 border border-gray-300 rounded-lg
+                       focus:outline-none focus:ring-2 focus:ring-blue-500
                        focus:border-transparent"
           />
         </div>
 
-        {/* Todo List / No Results Message */}
         {filteredTodos.length > 0 ? (
           <TodoList
             todos={filteredTodos}
