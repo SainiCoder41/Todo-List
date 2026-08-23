@@ -48,7 +48,7 @@ const initialTodos = [
 ]
 
 function App() {
-  const [todos, setTodos] = useState(initialTodos)
+const [todos, setTodos] = useState(initialTodos)
 const [searchTerm, setSearchTerm] = useState('')
 const [categoryFilter, setCategoryFilter] = useState('All')
 
@@ -77,6 +77,15 @@ const addTodo = (title, priority, category) => {
   const deleteTodo = (id) => {
     setTodos(todos.filter((todo) => todo.id !== id))
   }
+  const updateTodo = (id, updatedData) => {
+  setTodos(
+    todos.map((todo) =>
+      todo.id === id
+        ? { ...todo, ...updatedData }
+        : todo
+    )
+  )
+}
 
 const filteredTodos = todos.filter((todo) => {
   const matchesSearch = todo.title
@@ -89,6 +98,7 @@ const filteredTodos = todos.filter((todo) => {
 
   return matchesSearch && matchesCategory
 })
+
 
   return (
     <div className="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
@@ -139,11 +149,12 @@ const filteredTodos = todos.filter((todo) => {
         
 
         {filteredTodos.length > 0 ? (
-          <TodoList
-            todos={filteredTodos}
-            onToggleTodo={toggleTodo}
-            onDeleteTodo={deleteTodo}
-          />
+        <TodoList
+  todos={filteredTodos}
+  onToggleTodo={toggleTodo}
+  onDeleteTodo={deleteTodo}
+  onUpdateTodo={updateTodo}
+/>
         ) : (
           <div className="text-center py-8 text-gray-500">
             No todos found matching "{searchTerm}"
