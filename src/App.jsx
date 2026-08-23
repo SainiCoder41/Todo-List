@@ -9,6 +9,14 @@ const initialTodos = [
     completed: false,
     priority: "High",
     category: "Work",
+    activity: [
+      {
+        id: 101,
+        type: "created",
+        message: "Todo created",
+        timestamp: new Date().toLocaleString(),
+      },
+    ],
   },
   {
     id: 2,
@@ -16,6 +24,20 @@ const initialTodos = [
     completed: true,
     priority: "Medium",
     category: "Work",
+    activity: [
+      {
+        id: 201,
+        type: "created",
+        message: "Todo created",
+        timestamp: new Date().toLocaleString(),
+      },
+      {
+        id: 202,
+        type: "completed",
+        message: "Todo completed",
+        timestamp: new Date().toLocaleString(),
+      },
+    ],
   },
   {
     id: 3,
@@ -23,34 +45,24 @@ const initialTodos = [
     completed: false,
     priority: "High",
     category: "Work",
+    activity: [
+      {
+        id: 301,
+        type: "created",
+        message: "Todo created",
+        timestamp: new Date().toLocaleString(),
+      },
+    ],
   },
-  {
-    id: 4,
-    title: "Update project documentation",
-    completed: false,
-    priority: "Low",
-    category: "Other",
-  },
-  {
-    id: 5,
-    title: "Write unit tests",
-    completed: true,
-    priority: "Medium",
-    category: "Work",
-  },
-  {
-    id: 6,
-    title: "Deploy the application",
-    completed: false,
-    priority: "High",
-    category: "Work",
-  },
+
+  // Continue your other Todos...
 ]
 
 function App() {
 const [todos, setTodos] = useState(initialTodos)
 const [searchTerm, setSearchTerm] = useState('')
 const [categoryFilter, setCategoryFilter] = useState('All')
+const [activityHistory, setActivityHistory] = useState([])
 
 const addTodo = (title, priority, category) => {
   const newTodo = {
@@ -59,31 +71,133 @@ const addTodo = (title, priority, category) => {
     completed: false,
     priority,
     category,
+
+    activity: [
+      {
+        id: Date.now() + 1,
+        type: "created",
+        message: "Todo created",
+        timestamp: new Date().toLocaleString(),
+      },
+    ],
   }
 
   setTodos([newTodo, ...todos])
 }
 
-  const toggleTodo = (id) => {
-    setTodos(
-      todos.map((todo) =>
-        todo.id === id
-          ? { ...todo, completed: !todo.completed }
-          : todo
-      )
-    )
+const toggleTodo = (id) => {
+  setTodos(
+    todos.map((todo) => {
+      if (todo.id !== id) {
+        return todo
+      }
+
+      const newCompleted = !todo.completed
+
+      const newActivity = {
+        id: Date.now(),
+        type: newCompleted ? 'completed' : 'reopened',
+        message: newCompleted
+          ? 'Todo completed'
+          : 'Todo marked as active',
+        timestamp: new Date().toLocaleString(),
+      }
+
+      return {
+        ...todo,
+        completed: newCompleted,
+        activity: [
+          ...(todo.activity || []),
+          newActivity,
+        ],
+      }
+    })
+  )
+}
+
+const deleteTodo = (id) => {
+  const todo = todos.find((todo) => todo.id === id)
+
+  if (!todo) {
+    return
   }
 
-  const deleteTodo = (id) => {
-    setTodos(todos.filter((todo) => todo.id !== id))
+  const deleteActivity = {
+    id: Date.now(),
+    todoId: id,
+    type: "deleted",
+    message: "Todo deleted",
+    timestamp: new Date().toLocaleString(),
   }
-  const updateTodo = (id, updatedData) => {
+
+  setActivityHistory([
+    ...activityHistory,
+    {
+      ...deleteActivity,
+      todoTitle: todo.title,
+    },
+  ])
+
+  setTodos(todos.filter((todo) => todo.id !== id))
+}
+const updateTodo = (id, updatedData) => {
   setTodos(
-    todos.map((todo) =>
-      todo.id === id
-        ? { ...todo, ...updatedData }
-        : todo
-    )
+    todos.map((todo) => {
+      if (todo.id !== id) {
+        return todo
+      }
+
+      const activities = [
+        ...(todo.activity || []),
+      ]
+
+      // Title changed
+      if (
+        updatedData.title !== undefined &&
+        updatedData.title !== todo.title
+      ) {
+        activities.push({
+          id: Date.now(),
+          type: "edited",
+          message: "Todo edited",
+          timestamp: new Date().toLocaleString(),
+        })
+      }
+
+      // Priority changed
+      if (
+        updatedData.priority !== undefined &&
+        updatedData.priority !== todo.priority
+      ) {
+        activities.push({
+          id: Date.now() + 1,
+          type: "priority_changed",
+          message: `Priority changed from ${todo.priority} to ${updatedData.priority}`,
+          timestamp: new Date().toLocaleString(),
+        })
+      }
+
+      // Category changed
+      if (
+        updatedData.category !== undefined &&
+        updatedData.category !== todo.category
+      ) {
+        activities.push({
+          id: Date.now() + 2,
+          type: "category_changed",
+          message: `Category changed from ${
+            todo.category || "Other"
+          } to ${updatedData.category}`,
+          timestamp: new Date().toLocaleString(),
+        })
+      }
+
+      return {
+        ...todo,
+        ...updatedData,
+        activity: activities,
+      }
+    })
   )
 }
 
