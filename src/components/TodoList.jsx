@@ -7,7 +7,7 @@ function TodoList({
   onUpdateTodo,
 }) {
   const [editingId, setEditingId] = useState(null)
-
+const [selectedTodo, setSelectedTodo] = useState(null)
   const [editTitle, setEditTitle] = useState('')
   const [editPriority, setEditPriority] = useState('Medium')
   const [editCategory, setEditCategory] = useState('Other')
@@ -353,6 +353,37 @@ function TodoList({
                       />
                     </svg>
                   </button>
+                  <button
+  onClick={() => setSelectedTodo(todo)}
+  className="
+    flex h-9 w-9
+    items-center justify-center
+    rounded-lg
+    text-gray-400
+    transition-all
+    hover:bg-purple-50
+    hover:text-purple-600
+  "
+  title="View Details"
+>
+  <svg
+    className="h-5 w-5"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="1.8"
+    viewBox="0 0 24 24"
+  >
+    <circle cx="12" cy="12" r="9" />
+    <path
+      strokeLinecap="round"
+      d="M12 11v5"
+    />
+    <path
+      strokeLinecap="round"
+      d="M12 8h.01"
+    />
+  </svg>
+</button>
 
                   {/* Complete */}
                   <button
@@ -423,6 +454,182 @@ function TodoList({
           </div>
         )
       })}
+      {selectedTodo && (
+  <div className="
+    fixed inset-0 z-50
+    flex items-center justify-center
+    bg-black/40
+    px-4
+  ">
+    <div className="
+      w-full max-w-lg
+      max-h-[80vh]
+      overflow-y-auto
+      rounded-2xl
+      bg-white
+      p-6
+      shadow-2xl
+    ">
+
+      {/* Header */}
+      <div className="flex items-center justify-between mb-6">
+
+        <div>
+          <h2 className="text-xl font-bold text-gray-900">
+            Todo Details
+          </h2>
+
+          <p className="mt-1 text-sm text-gray-500">
+            {selectedTodo.title}
+          </p>
+        </div>
+
+        <button
+          onClick={() => setSelectedTodo(null)}
+          className="
+            flex h-8 w-8
+            items-center justify-center
+            rounded-lg
+            text-gray-400
+            hover:bg-gray-100
+            hover:text-gray-700
+          "
+        >
+          ✕
+        </button>
+
+      </div>
+
+      {/* Todo Information */}
+      <div className="
+        mb-6
+        rounded-xl
+        bg-gray-50
+        p-4
+      ">
+        <div className="flex flex-wrap gap-2">
+
+          <span className="
+            rounded-full
+            bg-gray-200
+            px-3 py-1
+            text-xs font-semibold
+            text-gray-700
+          ">
+            {selectedTodo.completed
+              ? "Completed"
+              : "Active"}
+          </span>
+
+          <span className="
+            rounded-full
+            bg-blue-50
+            px-3 py-1
+            text-xs font-semibold
+            text-blue-600
+          ">
+            {selectedTodo.category || "Other"}
+          </span>
+
+          <span className="
+            rounded-full
+            bg-red-50
+            px-3 py-1
+            text-xs font-semibold
+            text-red-600
+          ">
+            {selectedTodo.priority}
+          </span>
+
+        </div>
+      </div>
+
+      {/* Activity */}
+      <div>
+        <h3 className="
+          mb-4
+          text-sm
+          font-bold
+          uppercase
+          tracking-wide
+          text-gray-700
+        ">
+          Activity History
+        </h3>
+
+        <div className="space-y-4">
+
+          {(selectedTodo.activity || []).length > 0 ? (
+            selectedTodo.activity
+              .slice()
+              .reverse()
+              .map((activity) => (
+                <div
+                  key={activity.id}
+                  className="
+                    flex gap-3
+                    rounded-xl
+                    border border-gray-100
+                    p-3
+                  "
+                >
+                  <div className="
+                    mt-1
+                    h-2.5 w-2.5
+                    shrink-0
+                    rounded-full
+                    bg-blue-500
+                  " />
+
+                  <div>
+                    <p className="
+                      text-sm
+                      font-medium
+                      text-gray-800
+                    ">
+                      {activity.message}
+                    </p>
+
+                    <p className="
+                      mt-1
+                      text-xs
+                      text-gray-400
+                    ">
+                      {activity.timestamp}
+                    </p>
+                  </div>
+                </div>
+              ))
+          ) : (
+            <p className="text-sm text-gray-400">
+              No activity yet.
+            </p>
+          )}
+
+        </div>
+      </div>
+
+      {/* Close */}
+      <button
+        onClick={() => setSelectedTodo(null)}
+        className="
+          mt-6
+          w-full
+          rounded-lg
+          bg-gray-900
+          px-4 py-2.5
+          text-sm
+          font-semibold
+          text-white
+          hover:bg-gray-800
+        "
+      >
+        Close
+      </button>
+
+    </div>
+  </div>
+)}
     </div>
   )
 }
