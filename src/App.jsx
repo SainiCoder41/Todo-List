@@ -98,7 +98,19 @@ const filteredTodos = todos.filter((todo) => {
 
   return matchesSearch && matchesCategory
 })
+const totalTodos = todos.length
 
+const activeTodos = todos.filter(
+  (todo) => !todo.completed
+).length
+
+const completedTodos = todos.filter(
+  (todo) => todo.completed
+).length
+
+const highPriorityTodos = todos.filter(
+  (todo) => todo.priority === 'High' && !todo.completed
+).length
 
   return (
     <div className="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
@@ -148,18 +160,64 @@ const filteredTodos = todos.filter((todo) => {
 </div>
         
 
-        {filteredTodos.length > 0 ? (
-        <TodoList
-  todos={filteredTodos}
-  onToggleTodo={toggleTodo}
-  onDeleteTodo={deleteTodo}
-  onUpdateTodo={updateTodo}
-/>
-        ) : (
-          <div className="text-center py-8 text-gray-500">
-            No todos found matching "{searchTerm}"
-          </div>
-        )}
+      {/* Statistics */}
+<div className="grid grid-cols-2 gap-4 mb-8 sm:grid-cols-4">
+
+  {/* Total */}
+  <div className="rounded-2xl border border-gray-200 bg-white p-4 shadow-sm">
+    <p className="text-sm font-medium text-gray-500">
+      Total
+    </p>
+    <p className="mt-1 text-2xl font-bold text-gray-900">
+      {totalTodos}
+    </p>
+  </div>
+
+  {/* Active */}
+  <div className="rounded-2xl border border-blue-100 bg-blue-50 p-4">
+    <p className="text-sm font-medium text-blue-600">
+      Active
+    </p>
+    <p className="mt-1 text-2xl font-bold text-blue-700">
+      {activeTodos}
+    </p>
+  </div>
+
+  {/* Completed */}
+  <div className="rounded-2xl border border-green-100 bg-green-50 p-4">
+    <p className="text-sm font-medium text-green-600">
+      Completed
+    </p>
+    <p className="mt-1 text-2xl font-bold text-green-700">
+      {completedTodos}
+    </p>
+  </div>
+
+  {/* High Priority */}
+  <div className="rounded-2xl border border-red-100 bg-red-50 p-4">
+    <p className="text-sm font-medium text-red-600">
+      High Priority
+    </p>
+    <p className="mt-1 text-2xl font-bold text-red-700">
+      {highPriorityTodos}
+    </p>
+  </div>
+
+</div>
+
+{/* Todo List */}
+{filteredTodos.length > 0 ? (
+  <TodoList
+    todos={filteredTodos}
+    onToggleTodo={toggleTodo}
+    onDeleteTodo={deleteTodo}
+    onUpdateTodo={updateTodo}
+  />
+) : (
+  <div className="text-center py-8 text-gray-500">
+    No todos found matching "{searchTerm}"
+  </div>
+)}
 
       </div>
     </div>
