@@ -83,36 +83,39 @@ function TodoList({ todos, onToggleTodo, onDeleteTodo }) {
                   </h3>
 
                   {/* Priority Badge */}
-                  <span
-                    className={`
-                      inline-flex items-center gap-1.5
-                      rounded-full px-2.5 py-1
-                      text-xs font-bold
-                      
-                      ${
-                        todo.priority === "High"
-                          ? "bg-red-50 text-red-600 ring-1 ring-red-200"
-                          : todo.priority === "Medium"
-                          ? "bg-amber-50 text-amber-600 ring-1 ring-amber-200"
-                          : "bg-emerald-50 text-emerald-600 ring-1 ring-emerald-200"
-                      }
-                    `}
-                  >
-                    <span
-                      className={`
-                        h-1.5 w-1.5 rounded-full
-                        ${
-                          todo.priority === "High"
-                            ? "bg-red-500"
-                            : todo.priority === "Medium"
-                            ? "bg-amber-500"
-                            : "bg-emerald-500"
-                        }
-                      `}
-                    />
+                {/* Priority */}
+<span
+  className={`
+    inline-flex items-center gap-1.5
+    rounded-full px-2.5 py-1
+    text-xs font-bold
 
-                    {todo.priority}
-                  </span>
+    ${
+      todo.priority === "High"
+        ? "bg-red-50 text-red-600 ring-1 ring-red-200"
+        : todo.priority === "Medium"
+        ? "bg-amber-50 text-amber-600 ring-1 ring-amber-200"
+        : "bg-emerald-50 text-emerald-600 ring-1 ring-emerald-200"
+    }
+  `}
+>
+  {todo.priority}
+</span>
+
+{/* Category */}
+<span
+  className="
+    inline-flex items-center
+    rounded-full
+    bg-blue-50
+    px-2.5 py-1
+    text-xs font-semibold
+    text-blue-600
+    ring-1 ring-blue-200
+  "
+>
+  {todo.category || "Other"}
+</span>
                 </div>
 
                 {/* Status */}

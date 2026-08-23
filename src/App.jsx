@@ -8,53 +8,61 @@ const initialTodos = [
     title: "Complete GitHub assignment",
     completed: false,
     priority: "High",
+    category: "Work",
   },
   {
     id: 2,
     title: "Review pull request",
     completed: true,
     priority: "Medium",
+    category: "Work",
   },
   {
     id: 3,
     title: "Fix login page layout",
     completed: false,
     priority: "High",
+    category: "Work",
   },
   {
     id: 4,
     title: "Update project documentation",
     completed: false,
     priority: "Low",
+    category: "Other",
   },
   {
     id: 5,
     title: "Write unit tests",
     completed: true,
     priority: "Medium",
+    category: "Work",
   },
   {
     id: 6,
     title: "Deploy the application",
     completed: false,
     priority: "High",
+    category: "Work",
   },
 ]
 
 function App() {
   const [todos, setTodos] = useState(initialTodos)
-  const [searchTerm, setSearchTerm] = useState('')
+const [searchTerm, setSearchTerm] = useState('')
+const [categoryFilter, setCategoryFilter] = useState('All')
 
-  const addTodo = (title, priority) => {
-    const newTodo = {
-      id: Date.now(),
-      title,
-      completed: false,
-      priority,
-    }
-
-    setTodos([newTodo, ...todos])
+const addTodo = (title, priority, category) => {
+  const newTodo = {
+    id: Date.now(),
+    title,
+    completed: false,
+    priority,
+    category,
   }
+
+  setTodos([newTodo, ...todos])
+}
 
   const toggleTodo = (id) => {
     setTodos(
@@ -70,9 +78,17 @@ function App() {
     setTodos(todos.filter((todo) => todo.id !== id))
   }
 
-  const filteredTodos = todos.filter((todo) =>
-    todo.title.toLowerCase().includes(searchTerm.toLowerCase())
-  )
+const filteredTodos = todos.filter((todo) => {
+  const matchesSearch = todo.title
+    .toLowerCase()
+    .includes(searchTerm.toLowerCase())
+
+  const matchesCategory =
+    categoryFilter === 'All' ||
+    (todo.category || 'Other') === categoryFilter
+
+  return matchesSearch && matchesCategory
+})
 
   return (
     <div className="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
@@ -92,17 +108,35 @@ function App() {
           <TodoForm onAddTodo={addTodo} />
         </div>
 
-        <div className="mb-6">
-          <input
-            type="text"
-            placeholder="Search todos..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full px-4 py-3 border border-gray-300 rounded-lg
-                       focus:outline-none focus:ring-2 focus:ring-blue-500
-                       focus:border-transparent"
-          />
-        </div>
+       <div className="mb-6 flex flex-col sm:flex-row gap-3">
+
+  {/* Search */}
+  <input
+    type="text"
+    placeholder="Search todos..."
+    value={searchTerm}
+    onChange={(e) => setSearchTerm(e.target.value)}
+    className="flex-1 px-4 py-3 border border-gray-300 rounded-lg
+               focus:outline-none focus:ring-2 focus:ring-blue-500
+               focus:border-transparent"
+  />
+
+  {/* Category Filter */}
+  <select
+    value={categoryFilter}
+    onChange={(e) => setCategoryFilter(e.target.value)}
+    className="px-4 py-3 border border-gray-300 rounded-lg
+               bg-white
+               focus:outline-none focus:ring-2 focus:ring-blue-500"
+  >
+    <option value="All">All Categories</option>
+    <option value="Work">Work</option>
+    <option value="Personal">Personal</option>
+    <option value="Other">Other</option>
+  </select>
+
+</div>
+        
 
         {filteredTodos.length > 0 ? (
           <TodoList
